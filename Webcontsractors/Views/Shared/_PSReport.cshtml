@@ -1,0 +1,124 @@
+﻿@model List<ProjectReportModel>
+<style>
+    /* الجدول */
+    .table-container {
+        border-radius: 5px;
+        overflow: auto;
+        /* عشان لو الجدول كبير يظهر شريط تمرير */
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+
+        .table th,
+        .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+</style>
+<div id="PSR-to-pdf">
+    <div class="card">
+        <div class="card-body">
+            <ul class="list-group list-group-flush text-end">
+                <li class="list-group-item">
+                    <h5>
+                        اسم الشركه :
+                        <span>Integrated Entity</span>
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>
+                        الرقم الضريبي :
+                        <span>300011110003</span>
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>
+                        السجل الضريبي :
+                        <span>12345</span>
+                    </h5>
+                </li>
+            </ul>
+            <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">
+                    <h5>
+                        تقرير مختصر المشروعات
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <span>@ViewBag.Reptitle</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped table-hover table-responsive text-center" id="PSRep">
+        <thead>
+            <tr>
+                <th scope="col">
+                    اسم المشروع
+                </th>
+                <th scope="col">
+                    التاريخ
+                </th>
+                <th scope="col">
+                    اجمالي الدائن بدون ضريبه
+                </th>
+                <th scope="col">
+                    اجمالي المدين بدون ضريبه
+                </th>
+                <th scope="col">
+                    الفرق
+                </th>
+                <th scope="col">
+                    الشريك
+                </th>
+                <th scope="col">
+                    ملاحظات
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProjectName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastTransactionDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreditorSum)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DebitorSum)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Balance)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PartnerName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Note)
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

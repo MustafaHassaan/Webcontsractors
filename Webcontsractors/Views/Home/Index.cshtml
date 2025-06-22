@@ -1,0 +1,49 @@
+﻿@using Newtonsoft.Json
+@{
+    var permissionsJson = Context.Session.GetString("UserPermissions");
+    var userPermissions = new List<dynamic>();
+    if (!string.IsNullOrEmpty(permissionsJson))
+    {
+        userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+    }
+    //SMHPS : Sub Menu Has Permission Single
+    bool SMHPS(string controller)
+    {
+        return userPermissions.Any(p =>
+            string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+    <partial name="_Menu" />
+    <div id="content-area">
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col">
+                    <div>
+                        <span id="OCNav" style="margin-top:15px"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div style="margin-right: 50px">
+                        <h2>مرحبا بكم في</h2>
+                        <h3>برنامج المقاولات العامه</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>تصدير ملفات اكسل</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" style="width:25%">
+                            @if (SMHPS("تصدير حركة المشروعات والارصده"))
+                            {
+                                <a class="btn btn-outline-success" asp-action="ExportrptExcel" asp-controller="Home">
+                                    <i class="fas fa-file-excel"></i> تصدير حركة المشروعات والارصده
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,129 @@
+﻿@model IEnumerable<Paymentview>
+@using Newtonsoft.Json
+@{
+    var permissionsJson = Context.Session.GetString("UserPermissions");
+    var userPermissions = new List<dynamic>();
+    if (!string.IsNullOrEmpty(permissionsJson))
+    {
+        userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+    }
+    //SMHPS : Sub Menu Has Permission Single
+    bool SMHPS(string controller)
+    {
+        return userPermissions.Any(p =>
+            string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+    <partial name="_Menu" />
+    <div id="content-area">
+        <div class="content-text">
+            <div class="container">
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <div class="row">
+                                <div class="col text-end">
+                                    <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                                </div>
+                                <div class="col text-center">
+                                    <h3 class="">قائمة الدفعات</h3>
+                                </div>
+                                <div class="col text-start">
+                                    @if (SMHPS("اضافة دفعه جديده"))
+                                    {
+                                        <a asp-action="AddAccount" asp-controller="Accountant" class="btn btn-outline-primary" style="margin-left:10px;">اضافة دفعه جديده</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="Tblbody row-cols-auto">
+                    <table id="Protbl" class="paginated table table-borderless table-dark table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    رقم الدفعه
+                                </th>
+                                <th scope="col">
+                                    الوصف
+                                </th>
+                                <th scope="col">
+                                    دائن
+                                </th>
+                                <th scope="col">
+                                    مدين
+                                </th>
+                                <th scope="col">
+                                    المشروع
+                                </th>
+                                <th scope="col">
+                                    الشريك
+                                </th>
+                                <th>عمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Note)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Creditor)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Debitor)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Pro.Projectname)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Prt.Partnername)
+                                    </td>
+                                    <td>
+                                        @if (SMHPS("تفاصيل دفعه"))
+                                        {
+                                            <a asp-action="Prodetailes" asp-route-id="@item.Pro?.Id" class="btn btn-info">
+                                                <i class="fas fa-info"></i>
+                                            </a>
+                                        }
+                                        @if (SMHPS("تعديل دفعه"))
+                                        {
+                                            <a asp-action="EditAccount" asp-route-id="@item.Id" class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        }
+                                        @if (SMHPS("حذف دفعه"))
+                                        {
+                                            <a id="" class="btn btn-danger" asp-action="DeleteAccount" asp-route-id="@item.Id">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

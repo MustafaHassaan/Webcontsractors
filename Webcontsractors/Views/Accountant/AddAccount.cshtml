@@ -1,0 +1,88 @@
+﻿@model Paymentview
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-1">
+                        <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div class="col">
+                        <h3 class="">اضافة دفعه لشريك</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <div class="container text-center">
+                    <form action="AddAccount" method="post">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="payid" class="form-label" style="font-weight: bold">رقم المعامله</label>
+                                    <input type="text" for="payid" asp-for="Id" class="shadow form-control" id="payid" placeholder="رقم الحساب" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="mb-3">
+                                            <label for="paycred" class="form-label" style="font-weight: bold">دائن</label>
+                                            <input asp-for="Creditor" type="number" value="0.00" class="shadow form-control" id="paycred" placeholder="دائن">
+                                            <div id="errorcred" class="form-text" style="color: red; display:none;">* من فضلك ادخل الدائن</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="mb-3">
+                                            <label for="paydipt" class="form-label" style="font-weight: bold">مدين</label>
+                                            <input type="number" asp-for="Debitor" value="0.00" class="shadow form-control" id="paydipt" placeholder="المدين">
+                                            <div id="errortrndipt" class="form-text" style="color: red; display:none;">* من فضلك ادخل المدين</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="paydate" class="form-label" style="font-weight: bold">التاريخ</label>
+                                    <input type="date" asp-for="Date" class="shadow form-control" id="paydate" value="@ViewBag.Date" asp-format="{0:yyyy-MM-dd}">
+                                    <div id="" class="form-text" style="color: red; display:none;">* من فضلك ادخل التاريخ</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label for="Prtid" class="form-label" style="font-weight: bold">الشريك</label>
+                                        <select class="selectpicker form-control" data-live-search="true" asp-items="@ViewBag.Prt" asp-for="Prtid" id="Prtid">
+                                            <option data-tokens="0" selected disabled>الشريك</option>
+                                        </select>
+                                        <div id="errorPrtpro" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم الشريك</div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label for="trnpro" class="form-label" style="font-weight: bold">المشروع</label>
+                                        <select class="selectpicker form-control" data-live-search="true" asp-for="Proid" asp-items="@ViewBag.Pro" id="trnpro">
+                                            <option data-tokens="0" selected disabled>المشروع</option>
+                                        </select>
+                                        <div id="errortrnpro" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم المشروع</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6 col-sm-12">
+                                <label for="paynote" style="font-weight: bold">الوصف</label>
+                                <textarea asp-for="Note" class="shadow form-control" placeholder="الوصف" id="paynote"></textarea>
+                                <div id="errortrnnote" class="form-text" style="color: red; display:none;">* من فضلك ادخل الوصف</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="margin: 15px 0 10px 0px;" id="">حفظ</button>
+                        <button type="submit" class="btn btn-outline-success" style="margin: 15px 0 10px 0px;" id="Saveandaddaccount">حفظ واضافه</button>
+                        <a asp-action="Accountlist" class="btn btn-outline-primary">قائمة الدفعات</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,185 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+@model IEnumerable<Projectmodel>
+@{
+    var permissionsJson = Context.Session.GetString("UserPermissions");
+    var userPermissions = new List<dynamic>();
+    if (!string.IsNullOrEmpty(permissionsJson))
+    {
+        userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+    }
+    //SMHPS : Sub Menu Has Permission Single
+    bool SMHPS(string controller)
+    {
+        return userPermissions.Any(p =>
+            string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+    <partial name="_Menu" />
+    <div id="content-area">
+        <div class="content-text">
+            <div class="container">
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <div class="row">
+                                <div class="col text-end">
+                                    <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                                </div>
+                                <div class="col text-center">
+                                    <h3 class="">قائمة المشروعات</h3>
+                                </div>
+                                <div class="col text-start">
+                                    @if (SMHPS("اضافة مشروع جديد"))
+                                    {
+                                        <a asp-action="Prosave" asp-controller="Projects" class="btn btn-outline-primary" style="margin-left:10px;">اضافة مشروع جديد</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                @{
+                    var totalAmount = Model.Sum(x => x.Amount ?? 0);
+                    var totalVat = Model.Sum(x => x.Amountvat ?? 0);
+                    var totalOpening = Model.Sum(x => x.Opningbalance ?? 0);
+                    var totalBalance = Model.Sum(x => x.Balance);
+                    <div class="row mb-4 text-center fw-bold">
+                        <div class="col-md-3">
+                            <div class="alert alert-primary">
+                                إجمالي القيمة<br />
+                                @totalAmount
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-info">
+                                إجمالي الضريبة<br />
+                                @totalVat
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-warning">
+                                الرصيد الافتتاحي<br />
+                                @totalOpening
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-success">
+                                إجمالي الرصيد<br />
+                                @totalBalance
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="Tblbody row-cols-auto">
+                    <table id="Protbl" class="paginated table table-borderless table-dark table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    رقم المشروع
+                                </th>
+                                <th scope="col">
+                                    اسم المشروع
+                                </th>
+                                <th scope="col">
+                                    القيمة
+                                </th>
+                                <th scope="col">
+                                    الضريبه
+                                </th>
+                                <th scope="col">
+                                    الرصيد الافتتاحي
+                                </th>
+                                <th scope="col">
+                                    الرصيد
+                                </th>
+                                <th scope="col">
+                                    الشريك
+                                </th>
+                                <th scope="col">
+                                    ملاحظات
+                                </th>
+                                <th scope="col">
+                                    الحاله
+                                </th>
+                                <th>عمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Projectname)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Amount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Amountvat)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Opningbalance)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Balance)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Partnername)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Note)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Status)
+                                    </td>
+                                    <td>
+                                        @if (SMHPS("تفاصيل مشروع"))
+                                        {
+                                            <a asp-action="Prodetailes" asp-route-id="@item.Id" class="btn btn-info">
+                                                <i class="fas fa-info"></i>
+                                            </a>
+                                            <span>|</span>
+                                        }
+                                        @if (SMHPS("تعديل مشروع"))
+                                        {
+                                            <a asp-action="Proedit" asp-route-id="@item.Id" class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <span>|</span>
+                                        }
+                                        @if (SMHPS("حذف مشروع"))
+                                        {
+                                            <a id="Prodelete" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

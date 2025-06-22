@@ -1,0 +1,103 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+@model IEnumerable<Usermodel>
+@{
+    var permissionsJson = Context.Session.GetString("UserPermissions");
+    var userPermissions = new List<dynamic>();
+    if (!string.IsNullOrEmpty(permissionsJson))
+    {
+        userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+    }
+    //SMHPS : Sub Menu Has Permission Single
+    bool SMHPS(string controller)
+    {
+        return userPermissions.Any(p =>
+            string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+    <partial name="_Menu" />
+    <div id="content-area">
+        <div class="content-text">
+            <div class="container">
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <div class="row">
+                                <div class="col text-end">
+                                    <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                                </div>
+                                <div class="col text-center">
+                                    <h3 class="text-center">قائمة المستخدمين</h3>
+                                </div>
+                                <div class="col text-start">
+                                    @if (SMHPS("اضافة مستخدم جديد"))
+                                    {
+                                        <a asp-action="Signup" asp-controller="Users" class="btn btn-outline-primary">اضافة مستخدم جديد</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="Tblbody row-cols-auto">
+                    <table id="Usrtbl" class="Defultpaginated table table-borderless table-dark table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    رقم المستخدم
+                                </th>
+                                <th scope="col">
+                                    اسم المستخدم
+                                </th>
+                                <th scope="col">
+                                    كلمة السر
+                                </th>
+                                <th scope="col">
+                                    عمليات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Username)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Password)
+                                    </td>
+                                    <td>
+                                        @if (SMHPS("تفاصيل مستخدم"))
+                                        {
+                                            <a asp-action="AssignPermissions" asp-controller="Assign" asp-route-userId="@item.Id" class="btn btn-outline-light">
+                                                <i class="fas fa-shield-alt"></i>
+                                            </a>
+                                            <span>|</span>
+                                        }
+                                        @if (SMHPS("تعديل مستخدم"))
+                                        {
+                                            <a asp-action="Useredit" asp-route-id="@item.Id" class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <span>|</span>
+                                        }
+                                        @if (SMHPS("حذف مستخدم"))
+                                        {
+                                            <a id="Usrdelete" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

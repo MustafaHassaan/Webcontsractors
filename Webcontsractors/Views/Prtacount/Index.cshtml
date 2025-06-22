@@ -1,0 +1,65 @@
+﻿<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="container">
+            <nav class="navbar bg-body-tertiary">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <div class="row">
+                            <div class="col text-end">
+                                <span id="OCNav" style="position: unset;"><i class="fa fa-bars"></i></span>
+                                <h4 class="">كشف حساب شريك</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="row-cols-auto"></div>
+            <form method="post" asp-controller="Prtacount" asp-action="Index">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="fromDate" class="form-label">من تاريخ:</label>
+                        <input type="date" class="form-control" id="fromDate" name="fromDate" value="@ViewBag.DTF" placeholder="dd-mm-yyyy" />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="toDate" class="form-label">إلى تاريخ:</label>
+                        <input type="date" class="form-control" id="toDate" name="toDate" value="@ViewBag.DTT" placeholder="dd-mm-yyyy" />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="projectId" class="form-label">المشروع:</label>
+                        <select class="selectpicker form-control" multiple data-live-search="true" asp-items="@ViewBag.Pro" id="projectId" name="projectId">
+                            <option data-tokens="0" selected disabled>المشروع</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-3">
+                        <label for="ownerId" class="form-label">الشريك:</label>
+                        <select class="form-select" id="ownerId" name="ownerId" asp-items="@ViewBag.PartList">
+                            <option value="">-- الكل --</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">فلترة البحث</button>
+                <button type="submit" class="btn btn-dark" id="Filedclear">جديد</button>
+            </form>
+            <hr />
+            <div class="row-cols-auto">
+                <div class="top-bar">
+                    التقرير
+                </div>
+                <div class="container" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);max-height: 375px; overflow:auto; padding-top: 10px;">
+                    <partial name="_PAReport" />
+                </div>
+                <div class="button-container" style="margin-top:10px">
+                    <a class="btn btn-outline-danger" id="Pdfpar">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </a>
+                    @* <a class="btn btn-outline-success" id="Excelptr">
+                    <i class="fas fa-file-excel"></i> Download Excel
+                    </a> *@
+                    <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Report"><i class="fas fa-arrow-left"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

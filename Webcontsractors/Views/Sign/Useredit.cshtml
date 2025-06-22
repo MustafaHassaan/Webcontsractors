@@ -1,0 +1,50 @@
+﻿@model Usermodel
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="card">
+            <div class="card-header text-end">
+                <div class="row">
+                    <div class="col text-end">
+                        <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div class="col text-center">
+                        <h3 class="text-center">تعديل مستخدم</h3>
+                    </div>
+                    <div class="col  text-start">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <div class="container text-center">
+                    <form asp-action="Useredit" asp-controller="Sign" method="post">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="userid" class="form-label" style="font-weight: bold">رقم المستخدم</label>
+                                    <input type="text" asp-for="Id" class="shadow form-control" id="userid" placeholder="رقم المستخدم" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label" style="font-weight: bold">اسم المستخدم</label>
+                                    <input type="text" asp-for="Username" class="shadow form-control" id="username" placeholder="اسم المستخدم">
+                                    <div id="errorusrname" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم المستخدم</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="password" class="form-label" style="font-weight: bold">كلمة السر</label>
+                                    <input type="password" asp-for="Password" class="shadow form-control" id="password" placeholder="كلمة السر">
+                                    <div id="errorpassword" class="form-text" style="color: red; display:none;">* من فضلك ادخل كلمة السر</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning" style="margin: 15px 0 10px 0px;" id="Usredit">تعديل</button>
+                        <a asp-action="Index" asp-controller="Sign" class="btn btn-outline-primary">قائمة المستخدمين</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+﻿@model List<PARepviewmodel>
+
+<style>
+    .table-container {
+        border-radius: 5px;
+        overflow: auto;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        margin-bottom: 35px;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .table tfoot th, .table tfoot td {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+</style>
+
+<div id="PAR-to-pdf">
+    <div class="card">
+        <div class="card-body">
+            <ul class="list-group list-group-flush text-end">
+                <li class="list-group-item">
+                    <h5>اسم الشركة: <span>Integrated Entity</span></h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>الرقم الضريبي: <span>300011110003</span></h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>السجل الضريبي: <span>12345</span></h5>
+                </li>
+            </ul>
+
+            <!-- وضع اسم الشريك منفصلًا -->
+            @{
+                string partnerName = ViewBag.PartnerName;
+
+            }
+
+            <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">
+                    <h5>كشف حساب الشريك :  <span>@partnerName</span></h5>
+                </li>
+                <li class="list-group-item">
+                    <span>@ViewBag.Reptitle</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="margin-top:25px;" id="ptrRep">
+        <table class="table table-bordered table-striped table-hover text-center">
+            <thead>
+                <tr>
+                    <th>اسم المشروع</th>
+                    <th>التفاصيل</th>
+                    <th>التاريخ</th>
+                    <th>الدائن</th>
+                    <th>المدين</th>
+                    <th>الرصيد التراكمي</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5"><strong>رصيد افتتاحي</strong></td>
+                    <td>@ViewBag.OpeningBalance</td>
+                </tr>
+
+                @{
+                    decimal cumulativeBalance = ViewBag.OpeningBalance ?? 0;
+                }
+
+                @foreach (var head in Model)
+                {
+                    foreach (var t in head.Transactions)
+                    {
+                        cumulativeBalance += (t.Creditor ?? 0) - (t.Debitor ?? 0);
+                        <tr>
+                            <td>@head.ProjectName</td>
+                            <td>@t.Detailes</td>
+                            <td>@t.Tdate?.ToString()</td>
+                            <td>@t.Creditor</td>
+                            <td>@t.Debitor</td>
+                            <td>@Math.Round(cumulativeBalance, 2)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>الإجمالي:</strong></td>
+                    <td>@Math.Round(Model.Sum(h => h.Transactions.Sum(t => t.Creditor ?? 0)), 2)</td>
+                    <td>@Math.Round(Model.Sum(h => h.Transactions.Sum(t => t.Debitor ?? 0)), 2)</td>
+                    <td>@Math.Round(cumulativeBalance, 2)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

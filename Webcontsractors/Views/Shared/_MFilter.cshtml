@@ -1,0 +1,44 @@
+﻿<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="">
+                        <label for="fromDate" class="form-label">من تاريخ:</label>
+                        <input type="date" class="form-control" id="fromDate" name="fromDate" value="@ViewBag.DTF" placeholder="dd-mm-yyyy" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="">
+                        <label for="toDate" class="form-label">إلى تاريخ:</label>
+                        <input type="date" class="form-control" id="toDate" name="toDate" value="@ViewBag.DTT" placeholder="dd-mm-yyyy" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="">
+                        <label for="projectId" class="form-label">المشروع:</label>
+                        <select class="selectpicker form-control" multiple data-live-search="true" asp-items="@ViewBag.Pro" id="trnpro" name="projectId">
+                            <option data-tokens="0" selected disabled>المشروع</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="">
+                        <label for="ownerId" class="form-label">الشريك:</label>
+                        <select class="form-select" id="ownerId" name="ownerId" asp-items="@ViewBag.PartnerList">
+                            <option value="">-- الكل --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">غلق</button>
+                <button type="button" class="btn btn-outline-primary" id="Showrep">عرض التقرير</button>
+            </div>
+        </div>
+    </div>
+</div>

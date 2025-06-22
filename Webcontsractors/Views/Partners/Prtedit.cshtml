@@ -1,0 +1,82 @@
+﻿@model Partnermodel
+<style>
+    .custom {
+        width: 80%;
+        
+        height: 20px;
+        border-radius: 8px;
+        background: -webkit-gradient(linear, center top, center bottom, from(#CFDCDD), to(#DFE9EA), color-stop(50%, #DFE9EA));
+        -webkit-transition: background 450ms;
+        transition: background 450ms;
+    }
+</style>
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="card">
+            <div class="card-header text-end">
+                <div class="row">
+                    <div class="col-1">
+                        <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div class="col">
+                        <h3 class="">تعديل شريك</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <div class="container text-center">
+                    <form action="Prtedit" method="post">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="partid" class="form-label" style="font-weight: bold">رقم الشريك</label>
+                                    <input type="text" class="shadow form-control" id="partid" asp-for="Id" placeholder="رقم الشريك" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="partname" class="form-label" style="font-weight: bold">اسم الشريك</label>
+                                    <input type="text" class="shadow form-control" id="partname" asp-for="Partnername" placeholder="اسم الشريك">
+                                    <div id="errorprtname" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم الشريك</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="payamount" class="form-label" style="font-weight: bold">الرصيد</label>
+                                    <div style="display: flex">
+                                        <input type="number" class="shadow form-control" asp-for="Amount" id="payamount" placeholder="الرصيد" style="margin-left:5px">
+                                        <a class="btn btn-outline-dark" id="Profitsumprt">
+                                            <i class="fas fa-calculator"></i>
+                                        </a>
+                                    </div>
+                                    <div id="errorcred" class="form-text" style="color: red; display:none;">* من فضلك ادخل الرصيد</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div>
+                                    <label for="paypercentage" class="form-label" style="font-weight: bold">النسبه</label>
+                                </div>
+                                <input type="text" id="txtpaypercentage" asp-for="Percentage" hidden />
+                                <input type="range" id="paypercentage"
+                                       class="custom display-value"
+                                       min="0"
+                                       max="100"
+                                       value="0" />
+                                <output style="font-size:25px;width: 45px;height:0px;" id="percentageValue">0</output>%
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="floatingTextarea" style="font-weight: bold">ملاحظات</label>
+                            <textarea class="shadow form-control" asp-for="Description" placeholder="ملاحظات" id="floatingTextarea"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-warning" style="margin: 15px 0 10px 0px" id="Prtedit">تعديل</button>
+                        <a asp-action="Index" asp-controller="Partners" class="btn btn-outline-primary">قائمة الشركاء</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

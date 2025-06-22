@@ -1,0 +1,139 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+@{
+    var permissionsJson = Context.Session.GetString("UserPermissions");
+    var userPermissions = new List<dynamic>();
+    if (!string.IsNullOrEmpty(permissionsJson))
+    {
+        userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+    }
+    //SMHPS : Sub Menu Has Permission Single
+    bool SMHPS(string controller)
+    {
+        return userPermissions.Any(p =>
+            string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+    <partial name="_Menu" />
+    <div id="content-area">
+        <div class="content-text">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col text-end">
+                            <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                        </div>
+                        <div class="col text-center">
+                            <h3 class="text-center">التقارير</h3>
+                        </div>
+                        <div class="col  text-start">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <form method="Post" asp-controller="Report" asp-action="Reports">
+                            <div class="row-cols-auto">
+                                <div class="container" style="margin : 10px">
+                                    <div class="row">
+                                        @if (SMHPS("تقرير مختصر المشروعات"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="DPR">
+                                                    <label class="form-check-label" style="margin-right:25px" for="DPR">
+                                                        تقرير مختصر المشروعات
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (SMHPS("تقرير تفصيلي المشروعات"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="DDPR">
+                                                    <label class="form-check-label" style="margin-right:25px" for="DDPR">
+                                                        تقرير تفصيلي المشروعات
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (SMHPS("تقرير المبيعات"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="DSR">
+                                                    <label class="form-check-label" style="margin-right:25px" for="DSR">
+                                                        تقرير المبيعات
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (SMHPS("تقرير المشتريات"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="DPuR">
+                                                    <label class="form-check-label" style="margin-right:25px" for="DPuR">
+                                                        تقرير المشتريات
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (SMHPS("تقرير حركات مشروع"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="RBTP">
+                                                    <label class="form-check-label" style="margin-right:25px" for="RBTP">
+                                                        تقرير حركات مشروع
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (SMHPS("تقرير ضريبي للمدين"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="RBDept">
+                                                    <label class="form-check-label" style="margin-right:25px" for="RBDept">
+                                                        تقرير ضريبي للمدين
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (SMHPS("كشف حساب شريك"))
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="float:right" type="radio" name="flexRadioDefault" id="RBprt">
+                                                    <label class="form-check-label" style="margin-right:25px" for="RBprt">
+                                                        كشف حساب شريك
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            @*  <div class="row-cols-auto">
+                        <div class="container text-center" style="margin : 25px">
+                        <div class="row col-lg-12 col-md-12 col-sm-10">
+                        <div class="col">
+                        <button type="submit" id="ORF" style="width:50%" class="btn btn-info">عرض التقرير</button>
+                        </div>
+                        </div>
+                        </div>
+                        </div> *@
+                        </form>
+                    </div>
+                </div>
+                <div class="row-cols-auto text-center" style="margin-bottom : 25px">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="" data-bs-target="#staticBackdrop" id="ORF" style="width:50%">عرض التقرير</button>
+                    <partial name="_MFilter" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

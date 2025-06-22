@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Oprationmodel>
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="container text-center">
+            <nav class="navbar bg-body-tertiary">
+                 <div class="container">
+                    <div class="row">
+                        <div class="col text-end">
+                            <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                        </div>
+                        <div class="col text-center">
+                            <div class="navbar-brand">
+                                <h3 class="text-center">قائمة المدخلات</h3>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </nav>
+            <div class="Tblbody row-cols-auto">
+                <table id="Tblentry" class="paginated table table-borderless table-dark table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                رقم المدخل
+                            </th>
+                            <th scope="col">
+                                الوصف
+                            </th>
+                            <th scope="col">
+                                نوع العمليه
+                            </th>
+                            <th scope="col">
+                                الشاشة
+                            </th>
+                            <th scope="col">
+                                الوقت
+                            </th>
+                            <th scope="col">
+                                التاريخ
+                            </th>
+                            <th scope="col">
+                                المستخدم
+                            </th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Detailes)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Oprationname)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Tblname)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Username)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

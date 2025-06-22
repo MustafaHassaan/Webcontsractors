@@ -1,0 +1,240 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+
+@{
+    var idStr = Context.Request.Cookies["Id"];
+        var permissionsJson = Context.Session.GetString("UserPermissions");
+        var userPermissions = new List<dynamic>();
+
+        if (!string.IsNullOrEmpty(permissionsJson))
+        {
+            userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+        }
+        //MHP : Menu Has Permission
+        bool MHP(string controller)
+        {
+            return userPermissions.Any(p =>
+                string.Equals(p.Menuname.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+        //SMHP : Sub Menu Has Permission
+        bool SMHP(string controller)
+        {
+            return userPermissions.Any(p =>
+                string.Equals(p.Submenuame.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+        //SMHPS : Sub Menu Has Permission Single
+        bool SMHPS(string controller)
+        {
+            return userPermissions.Any(p =>
+                string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+        <div class="sideMenu" id="side-menu">
+            <div class="main-menu">
+                @if (MHP("القائمة الرئيسية"))
+                {
+                    <a asp-action="index" asp-controller="home" class="active" id="Homesection">
+                        <i class="fas fa-qrcode"></i>
+                        <span>الرئيسيه</span>
+                    </a>
+                }
+
+                @if (MHP("قائمة الشركاء"))
+                {
+                    <div>
+                        <a id="Partnerssection"
+                           class="nav-link dropdown-toggle"
+                           data-bs-toggle="collapse"
+                           href="#collapsePartners"
+                           role="button" aria-expanded="false"
+                           aria-controls="collapsePartners">
+                            <i class="fas fa-handshake"></i>
+                            <span>الشركاء</span>
+                        </a>
+                        <div class="collapse" id="collapsePartners">
+                            <ul class="lists">
+                                @if (SMHP("قائمة الشركاء"))
+                                {
+                                    <li>
+                                        <a asp-action="index" asp-controller="Partners">
+                                            <span>قائمة الشركاء</span>
+                                        </a>
+                                    </li>
+                                    if (SMHPS("اضافة شريك"))
+                                    {
+                                        <li>
+                                            <a asp-action="Prtsave" asp-controller="Partners">
+                                                <span>اضافة شريك</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (SMHP("قائمة الدفعات"))
+                                {
+                                    <li>
+                                        <a asp-action="Accountlist" asp-controller="Accountant">
+                                            <span>قائمة الدفعات</span>
+                                        </a>
+                                    </li>
+                                    if (SMHPS("اضافة دفعه جديده"))
+                                    {
+                                        <li>
+                                            <a asp-action="AddAccount" asp-controller="Accountant">
+                                                <span>اضافة دفعه لشريك</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (SMHP("كشف حساب"))
+                                {
+                                    <li>
+                                        <a asp-action="Index" asp-controller="Prtacount">
+                                            <span>كشف حساب</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+            @if (MHP("قائمة المشروعات"))
+                {
+                    <div>
+                        <a id="Projectssection"
+                           class="nav-link dropdown-toggle"
+                           data-bs-toggle="collapse"
+                           href="#collapseProjects"
+                           role="button" aria-expanded="false"
+                           aria-controls="collapseProjects">
+                            <i class="fab fa-r-project"></i>
+                            <span>المشروعات</span>
+                        </a>
+                        <div class="collapse" id="collapseProjects">
+                            <ul class="lists">
+                                @if (SMHP("قائمة المشروعات"))
+                                {
+                                    <li>
+                                        <a asp-action="index" asp-controller="Projects">
+                                            <span>قائمة المشروعات</span>
+                                        </a>
+                                    </li>
+                                    @if (SMHPS("اضافة مشروع جديد"))
+                                    {
+                                        <li>
+                                            <a asp-action="Prosave" asp-controller="Projects">
+                                                <span>اضافة مشروع</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+            @if (MHP("قائمة الحركات"))
+                {
+                    <div>
+                        <a id="Transactionssection"
+                           class="nav-link dropdown-toggle"
+                           data-bs-toggle="collapse"
+                           href="#collapseTransactions"
+                           role="button" aria-expanded="false"
+                           aria-controls="collapseTransactions">
+                            <i class="fas fa-transgender-alt"></i>
+                            <span>الحركات</span>
+                        </a>
+                        <div class="collapse" id="collapseTransactions">
+                            <ul class="lists">
+                                @if (SMHP("قائمة الحركات"))
+                                {
+                                    <li>
+                                        <a asp-action="Index" asp-controller="Transactions">
+                                            <span>قائمة الحركات</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (SMHP("حركات بدون مشروع"))
+                                {
+                                    <li>
+                                        <a asp-action="Top" asp-controller="Transactions">
+                                            <span>حركات بدون مشروع</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (SMHPS("اضافة حركه جديده"))
+                                {
+                                    <li>
+                                        <a asp-action="Trnsave" asp-controller="Transactions">
+                                            <span>اضافة حركه</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+            @if (MHP("قائمة المستخدمين"))
+                {
+                    <div>
+                        <a id="Rolesection"
+                           class="nav-link dropdown-toggle"
+                           data-bs-toggle="collapse"
+                           href="#collapseRole"
+                           role="button" aria-expanded="false"
+                           aria-controls="collapseRole">
+                            <i class="fas fa-user-tag"></i>
+                            <span>المستخدمين</span>
+                        </a>
+                        <div class="collapse" id="collapseRole">
+                            <ul class="lists">
+                                @if (SMHP("قائمة المستخدمين"))
+                                {
+                                    <li>
+                                        <a asp-action="Index" asp-controller="Sign">
+                                            <span>قائمة المستخدمين</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (SMHPS("اضافة مستخدم جديد"))
+                                {
+                                    <li>
+                                        <a asp-action="Signup" asp-controller="Users">
+                                            <span>اضافة مستخدم</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (SMHP("صلاحيات المستخدمين"))
+                                {
+                                    <li>
+                                        <a asp-action="AssignPermissions" asp-controller="Assign">
+                                            <span>صلاحيات المستخدمين</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+            @if (MHP("قائمة التقارير"))
+                {
+                    <a asp-action="Index" asp-controller="Report" id="Reportssection">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>التقارير</span>
+                    </a>
+                }
+
+                <a asp-action="Signout" asp-controller="Sign" id="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل الخروج</span>
+                </a>
+            </div>
+        </div>
+}
+
+

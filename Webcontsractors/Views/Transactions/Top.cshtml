@@ -1,0 +1,126 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+@model IEnumerable<Transactionmodel>
+@{
+    var permissionsJson = Context.Session.GetString("UserPermissions");
+    var userPermissions = new List<dynamic>();
+    if (!string.IsNullOrEmpty(permissionsJson))
+    {
+        userPermissions = JsonConvert.DeserializeObject<List<dynamic>>(permissionsJson);
+    }
+    //SMHPS : Sub Menu Has Permission Single
+    bool SMHPS(string controller)
+    {
+        return userPermissions.Any(p =>
+            string.Equals(p.Singlpage.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+    <partial name="_Menu" />
+    <div id="content-area">
+        <div class="content-text">
+            <div class="container text-center">
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <div class="row">
+                                <div class="col">
+                                    <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                                </div>
+                                <div class="col text-center">
+                                    <h3 class="">قائمة الحركات بدون مشروع</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="Tblbody row-cols-auto">
+                    <table id="Trntbl" class="paginated table table-borderless table-dark table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    رقم التعامل
+                                </th>
+                                <th scope="col">
+                                    الدائن
+                                </th>
+                                <th scope="col">
+                                    المدين
+                                </th>
+                                <th scope="col">
+                                    الضريبه
+                                </th>
+                                <th scope="col">
+                                    الرصيد
+                                </th>
+                                <th scope="col">
+                                    المشروع
+                                </th>
+                                <th scope="col">
+                                    الوصف
+                                </th>
+                                <th scope="col">
+                                    التاريخ
+                                </th>
+                                <th scope="col">
+                                    ملاحظات
+                                </th>
+                                <th scope="col">
+                                    عمليات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Creditor)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Debitor)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Vatamount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Balance)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Projectname)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Detailes)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Tdate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Note)
+                                    </td>
+                                    <td>
+                                        @if (SMHPS("تعديل حركه"))
+                                        {
+                                            <a asp-action="Trnedit" asp-route-id="@item.Id" class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <span>|</span>
+                                        }
+                                        @if (SMHPS("حذف حركه"))
+                                        {
+                                            <a id="Trndelete" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+ }

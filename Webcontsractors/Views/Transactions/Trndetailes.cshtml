@@ -1,0 +1,104 @@
+﻿@model Transactionmodel
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-1">
+                        <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div class="col">
+                        <h3 class="">معلومات الحركة</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <div class="container text-center">
+                    <form action="Trndetailes" method="get">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="trnid" class="form-label" style="font-weight: bold">رقم المعامله</label>
+                                    <input type="text" asp-for="Id" class="shadow form-control" id="trnid" placeholder="رقم المعامله" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="mb-3">
+                                            <label for="trncred" class="form-label" style="font-weight: bold">دائن</label>
+                                            <input type="number" asp-for="Creditor" class="shadow form-control" id="trncred" placeholder="دائن" disabled>
+                                            <div id="errorcred" class="form-text" style="color: red; display:none;">* من فضلك ادخل الدائن</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="mb-3">
+                                            <label for="trndipt" class="form-label" style="font-weight: bold">مدين</label>
+                                            <input type="number" asp-for="Debitor" class="shadow form-control" id="trndipt" placeholder="المدين" disabled>
+                                            <div id="errortrndipt" class="form-text" style="color: red; display:none;">* من فضلك ادخل المدين</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="trndate" class="form-label" style="font-weight: bold">التاريخ</label>
+                                    <input type="date" asp-for="Tdate" class="shadow form-control" id="trndate" disabled>
+                                    <div id="errortrndate" class="form-text" style="color: red; display:none;">* من فضلك ادخل القيمة</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mt-4 form-check form-switch" style="text-align: right;">
+                                    @{
+                                        if (Model.Vatamount != 0 &&
+                                            double.Parse(Model.Vatamount.ToString()) != 0.00 &&
+                                            Model.Vatamount.ToString() != "")
+                                        {
+                                            <input class="shadow form-check-input" type="checkbox" role="switch" id="trntaxc" style="float:right" disabled checked>
+
+                                        }
+                                        else
+                                        {
+                                            <input class="shadow form-check-input" type="checkbox" role="switch" id="trntaxc" style="float:right" disabled>
+                                        }
+                                    }
+                                    <label class="form-check-label" style="margin-right:35px;" for="trntaxc">ضريبة القيمة المضافة</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="trntax" class="form-label" style="font-weight: bold">الضريبه</label>
+                                    <input type="text" asp-for="Vatamount" class="shadow form-control" id="trntax" placeholder="الضريبه" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="trnpro" class="form-label" style="font-weight: bold">المشروع</label>
+                                <select class="selectpicker form-control" data-live-search="true" asp-for="Proid" asp-items="@ViewBag.Pro" id="trnpro" disabled>
+                                    <option data-tokens="0" selected disabled>المشروع</option>
+                                </select>
+                                <div id="errortrnpro" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم المشروع</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="trnnote" style="font-weight: bold">الوصف</label>
+                                <textarea asp-for="Detailes" class="shadow form-control" placeholder="الوصف" id="trnnote"></textarea>
+                                <div id="errortrnnote" class="form-text" style="color: red; display:none;">* من فضلك ادخل الوصف</div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="trnnote" style="font-weight: bold">ملاحظات</label>
+                                <textarea asp-for="Note" class="shadow form-control" placeholder="ملاحظات" id="trnnote"></textarea>
+                            </div>
+                        </div>
+                        <a asp-action="Index" asp-controller="Transactions" class="btn btn-outline-primary">قائمة الحركات</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

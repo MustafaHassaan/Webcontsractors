@@ -1,0 +1,138 @@
+﻿@model Projectmodel
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="card">
+            <div class="card-header text-end">
+                <div class="row">
+                    <div class="col text-end">
+                        <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div class="col text-center">
+                        <h3 class="">تفاصيل المشروع</h3>
+                    </div>
+                    <div class="col text-start">
+                        <a asp-action="Accountlist" asp-controller="Accountant" class="btn btn-outline-primary">قائمة الدفعات</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <div class="container text-center">
+                    <form action="Prodetailes" method="get">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="proid" class="form-label" style="font-weight: bold">رقم المشروع</label>
+                                    <input type="text" asp-for="Id" class="shadow form-control" id="proid" placeholder="رقم المشروع" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="proname" class="form-label" style="font-weight: bold">اسم المشروع</label>
+                                    <input type="text" asp-for="Projectname" class="shadow form-control" id="proname" placeholder="اسم المشروع" disabled>
+                                    <div id="errorproname" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم المشروع</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label" style="font-weight: bold">القيمة</label>
+                                    <input type="number" class="shadow form-control" asp-for="Amount" id="amount" placeholder="القيمة" disabled>
+                                    <div id="erroramount" class="form-text" style="color: red; display:none;">* من فضلك ادخل القيمة</div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="amountvat" class="form-label" style="font-weight: bold">الضريبه</label>
+                                    <input type="number" asp-for="Amountvat" class="shadow form-control" id="amountvat" placeholder="الضريبه" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="Balance" class="form-label" style="font-weight: bold">الرصيد</label>
+                                    <input type="number" asp-for="Balance" class="shadow form-control" id="Balance" placeholder="الرصيد" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="Prtpro" class="form-label" style="font-weight: bold">الشريك</label>
+                                <select class="selectpicker form-control" data-live-search="true" asp-for="Prtid" asp-items="@ViewBag.Prt" disabled>
+                                    <option data-tokens="0" selected disabled>الشريك</option>
+                                </select>
+                                <div id="errorPrtpro" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم الشريك</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="Pronote" style="font-weight: bold">ملاحظات</label>
+                                <textarea class="shadow form-control" asp-for="Note" placeholder="ملاحظات" id="Pronote" rows="5"></textarea>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <label for="trndate" class="form-label" style="font-weight: bold">التاريخ</label>
+                                        <input type="date" asp-for="Tdate" class="shadow form-control" id="prodate" value="@ViewBag.Date" asp-format="{0:yyyy-MM-dd}">
+                                        <div id="errortrndate" class="form-text" style="color: red; display:none;">* من فضلك ادخل القيمة</div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
+                                        <div class="mt-4 form-check form-switch" style="text-align: right;">
+                                            <input class="shadow form-check-input" type="checkbox" role="switch" style="float:right" id="Prostatus" checked>
+                                            <label class="form-check-label" style="margin-right:40px;float:right" for="flexSwitchCheckChecked">حالة المشروع</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="Trntbl" class="paginated table table-borderless table-dark table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">رقم التعامل</th>
+                                    <th scope="col">الدائن</th>
+                                    <th scope="col">المدين</th>
+                                    <th scope="col">الضريبه</th>
+                                    <th scope="col">الوصف</th>
+                                    <th scope="col">التاريخ</th>
+                                    <th scope="col">ملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var Data = ViewBag.Data;
+                                    if (Data != null)
+                                        {
+                                        foreach (var item in Model.Transactions)
+                                        {
+                                            <tr>
+                                                <td>@item.Id</td>
+                                                <td>@item.Creditor</td>
+                                                <td>@item.Debitor</td>
+                                                <td>@item.Vatamount</td>
+                                                <td>@item.Detailes</td>
+                                                <td>@(item.Tdate.HasValue? item.Tdate.Value.ToString("dd-MM-yyyy") : "—")</td>
+                                                <td>@item.Note</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

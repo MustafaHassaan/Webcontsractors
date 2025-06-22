@@ -1,0 +1,157 @@
+﻿@model List<PTRepviewmodel>
+
+<style>
+    /* الجدول */
+    .table-container {
+        border-radius: 5px;
+        overflow: auto;
+        /* عشان لو الجدول كبير يظهر شريط تمرير */
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        margin-bottom: 35px;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        /* تنسيق الفوتر */
+        .table tfoot th, .table tfoot td {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+</style>
+
+<div id="PTR-to-pdf">
+    <div class="card">
+        <div class="card-body">
+            <ul class="list-group list-group-flush text-end">
+                <li class="list-group-item">
+                    <h5>
+                        اسم الشركة:
+                        <span>Integrated Entity</span>
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>
+                        الرقم الضريبي:
+                        <span>300011110003</span>
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>
+                        السجل الضريبي:
+                        <span>12345</span>
+                    </h5>
+                </li>
+            </ul>
+            <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">
+                    <h5>
+                        تقرير حركة المشروعات
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <span>@ViewBag.Reptitle</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="margin-top:25px;" id="ptrRep">
+        <!-- هنا نعرض جميع المشاريع -->
+        @foreach (var head in Model)
+        {
+            ViewBag.openingBalance = head.OpeningBalance;
+            <ul class="list-group list-group-flush text-end">
+                <li class="list-group-item">
+                    <h5>
+                        اسم المشروع:
+                        <span>@head.Project?.Projectname</span>
+                    </h5>
+                </li>
+                <li class="list-group-item">
+                    <h5>
+                        الشريك:
+                        <span>@head.Project?.Prt?.Partnername</span>
+                    </h5>
+                </li>
+            </ul>
+
+            <!-- جدول الحركات -->
+            <table class="table table-bordered table-striped table-hover table-responsive text-center" id="PTRep">
+                <thead>
+                    <tr>
+                        <th scope="col">التاريخ</th>
+                        <th scope="col">التفاصيل</th>
+                        <th scope="col">الدائن</th>
+                        <th scope="col">المدين</th>
+                        <th scope="col">الضريبة</th>
+                        <th scope="col">الرصيد التراكمي</th> <!-- العمود الجديد هنا -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @* إضافة الرصيد الافتتاحي كأول صف *@
+                    <tr>
+                        <td>---</td> <!-- نترك التاريخ فارغ لأن هذا الصف لا يتعلق بحركة معينة -->
+                        <td>رصيد افتتاحي</td>
+                        <td>---</td> <!-- لا يوجد دائن للرصيد الافتتاحي -->
+                        <td>---</td> <!-- لا يوجد مدين للرصيد الافتتاحي -->
+                        <td>---</td> <!-- لا يوجد ضريبة للرصيد الافتتاحي -->
+                        <td>@ViewBag.openingBalance</td> <!-- عرض الرصيد الافتتاحي -->
+                        @* <td>@Math.Round(head.Project?.Opningbalance ?? 0, 2)</td> <!-- عرض الرصيد الافتتاحي --> *@
+                    </tr>
+                    @* هنا سنقوم بحساب الرصيد التراكمي في كل صف *@
+                    @{
+                        decimal cumulativeBalance = ViewBag.openingBalance ?? 0; // نبدأ الرصيد من الافتتاحي
+                    }
+                    @foreach (var t in head.Transactions)
+                    {
+                        @* نحسب الرصيد التراكمي في كل صف *@
+                        cumulativeBalance += (t.Creditor ?? 0) - (t.Debitor ?? 0);
+                        <tr>
+                            <td>@t.Tdate?.ToString("yyyy-MM-dd")</td>
+                            <td>@t.Detailes</td>
+                            <td>@t.Creditor</td>
+                            <td>@t.Debitor</td>
+                            <td>@t.Vatamount</td>
+                            <td>@Math.Round(cumulativeBalance, 2)</td> <!-- عرض الرصيد التراكمي -->
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>الإجمالي:</strong></td>
+                        <td>
+                            @* هنا نحسب مجموع الدائن *@
+                            @Math.Round(head.Transactions.Sum(t => t.Creditor ?? 0), 2)
+                        </td>
+                        <td>
+                            @* هنا نحسب مجموع المدين *@
+                            @Math.Round(head.Transactions.Sum(t => t.Debitor ?? 0), 2)
+                        </td>
+                        <td>
+                            @* هنا نحسب مجموع الضريبة *@
+                            @Math.Round(head.Transactions.Sum(t => t.Vatamount ?? 0), 2)
+                        </td>
+                        <td>
+                            @* هنا نحسب الرصيد الختامي (آخر قيمة للرصيد التراكمي) *@
+                            @Math.Round(cumulativeBalance, 2)
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+    </div>
+</div>

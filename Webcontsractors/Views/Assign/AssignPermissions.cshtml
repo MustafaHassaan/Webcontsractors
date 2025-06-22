@@ -1,0 +1,113 @@
+﻿@model PermissionViewModel
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="container">
+            <nav class="navbar bg-body-tertiary">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <div class="row">
+                            <div class="col text-end">
+                                <span id="OCNav" style="position: unset;"><i class="fa fa-bars"></i></span>
+                                <h4>إسناد الصلاحيات للمستخدمين</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="row-cols-auto">
+                <div class="container mt-4" style="direction: rtl">
+                    <!-- اختيار المستخدم -->
+                    <form method="get" asp-action="AssignPermissions" style="margin-top:25px; margin-bottom:25px; width:250px;">
+                        <label for="" class="form-label" style="font-weight: bold">المستخدم</label>
+                        <select class="selectpicker form-control" data-live-search="true" name="userId" asp-for="UserId" onchange="this.form.submit()"
+                                asp-items="@ViewBag.user" style="width: 35px; text-align:right">
+                            <option selected disabled>المستخدم</option>
+                        </select>
+                        <div id="errorPrtpro" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم المستخدم</div>
+                    </form>
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+
+                    @if (Model.UserId != null)
+                    {
+                        <form asp-action="AssignPermissions" method="post">
+                            <input type="hidden" name="UserId" value="@Model.UserId" />
+
+                            @foreach (var menu in Model.Menus)
+                            {
+                                <div class="card mb-3 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <strong>@menu.MenuName</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        @foreach (var sub in menu.SubMenus)
+                                        {
+                                            <div class="card mb-2 border-secondary ms-3">
+                                                <div class="card-header bg-secondary text-white">
+                                                    <strong>@sub.SubMenuName</strong>
+                                                </div>
+                                                <div class="card-body">
+                                                    @foreach (var pages in sub.Pages)
+                                                    {
+                                                        <div class="card border-light mb-3">
+                                                            <div class="card-header bg-light d-flex justify-content-end align-items-start" style="direction: ltr;">
+                                                                <label class="form-check-label fw-bold" style="margin-right: 10px;">صفحة : @pages.PageName</label>
+                                                                <label class="form-check-label fw-bold" style="margin-right: 10px;">صفحة : @pages.PageId</label>
+                                                                <input class="form-check-input master-checkbox"
+                                                                       type="checkbox"
+                                                                       name="PageMasterSelections"
+                                                                       value="@pages.PageId"
+                                                                       onclick="togglePagePermissions(this)"
+                                                                @(Model.PageMasterSelections.Contains(pages.PageId.ToString()) || pages.Permissions.Any(p => p.IsChecked) ? "checked" : "") />
+
+                                                            </div>
+                                                            <div class="card-body row">
+                                                                @foreach (var permission in pages.Permissions)
+                                                                {
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-check form-check d-flex justify-content-end align-items-start" style="direction: ltr;">
+                                                                            <label class="form-check-label" for="perm_@permission.PermissionId" style="margin-right: 30px;">
+                                                                                @permission.Description
+                                                                            </label>
+                                                                            <input class="form-check-input permission-checkbox"
+                                                                                   type="checkbox"
+                                                                                   name="SelectedPermissions"
+                                                                                   value="@($"{permission.PermissionId}|{pages.PageId}")"
+                                                                                   id="perm_@permission.PermissionId"
+                                                                                   data-page-id="@pages.PageId"
+                                                                                   data-menu-id="@permission.PermissionId"
+                                                                            @(permission.IsChecked ? "checked" : "") />
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            }
+
+                            <button type="submit" class="btn btn-success mt-3">حفظ الصلاحيات</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePagePermissions(source) {
+        const card = source.closest('.card');
+        const checkboxes = card.querySelectorAll('.form-check-input[type="checkbox"]:not(.master-checkbox)');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+</script>

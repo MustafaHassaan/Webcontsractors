@@ -1,0 +1,149 @@
+﻿@model Projectmodel
+<partial name="_Menu" />
+<div id="content-area">
+    <div class="content-text">
+        <div class="card">
+            <div class="card-header text-end">
+                <div class="row">
+                    <div class="col-1">
+                        <span id="OCNav" style="position:unset;"><i class="fa fa-bars"></i></span>
+                    </div>
+                    <div class="col">
+                        <h3 class="">تعديل مشروع</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <div class="container text-center">
+                    <form>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="proid" class="form-label" style="font-weight: bold">رقم المشروع</label>
+                                    <input type="text" asp-for="Id" class="shadow form-control" id="proid" placeholder="رقم المشروع" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="proname" class="form-label" style="font-weight: bold">اسم المشروع</label>
+                                    <input type="text" asp-for="Projectname" class="shadow form-control" id="proname" placeholder="اسم المشروع">
+                                    <div id="errorproname" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم المشروع</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label" style="font-weight: bold">القيمة</label>
+                                    <input type="number" class="shadow form-control" asp-for="Amount" id="amount" placeholder="القيمة">
+                                    <div id="erroramount" class="form-text" style="color: red; display:none;">* من فضلك ادخل القيمة</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="mt-4 form-check form-switch" style="text-align: right;">
+                                    @{
+                                        var AV = Model.Amountvat;
+                                        if (AV != null)
+                                        {
+                                            var GAV = double.Parse(Model.Amountvat.ToString());
+                                            if (GAV > 0)
+                                            {
+                                                <input class="shadow form-check-input" type="checkbox" role="switch" style="float:right" id="flexSwitchCheckChecked" checked>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <input class="shadow form-check-input" type="checkbox" role="switch" style="float:right" id="flexSwitchCheckChecked">
+                                        }
+                                    }
+                                    <label class="form-check-label" style="margin-right:40px;float:right" for="flexSwitchCheckChecked">ضريبة القيمة المضافة</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div>
+                                    <label for="Opningbalance" class="form-label" style="font-weight: bold">الرصيد الافتتاحي</label>
+                                    <input type="number" class="shadow form-control" asp-for="Opningbalance" id="Opningbalance" placeholder="الرصيد الافتتاحي">
+                                    <div id="errorOpningbalance" class="form-text" style="color: red; display:none;">* من فضلك ادخل الرصيد الافتتاحي</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="mb-3">
+                                    <label for="amountvat" class="form-label" style="font-weight: bold">الضريبه</label>
+                                    <input type="number" asp-for="Amountvat" class="shadow form-control" id="amountvat" placeholder="الضريبه">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="Prtpro" class="form-label" style="font-weight: bold">الشريك</label>
+                                <select class="selectpicker form-control" data-live-search="true" asp-for="Prtid" asp-items="@ViewBag.Prt" id="Prtid">
+                                    <option data-tokens="0" selected disabled>الشريك</option>
+                                </select>
+                                <div id="errorPrtpro" class="form-text" style="color: red; display:none;">* من فضلك ادخل اسم الشريك</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="Pronote" style="font-weight: bold">ملاحظات</label>
+                                <textarea class="shadow form-control" asp-for="Note" placeholder="ملاحظات" id="Pronote" rows="5"></textarea>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <label for="trndate" class="form-label" style="font-weight: bold">التاريخ</label>
+                                        <input type="date" asp-for="Tdate" class="shadow form-control" id="prodate" value="@ViewBag.Date" asp-format="{0:yyyy-MM-dd}">
+                                        <div id="errortrndate" class="form-text" style="color: red; display:none;">* من فضلك ادخل القيمة</div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mt-4">
+                                        <div class="mt-4 form-check form-switch" style="text-align: right;">
+                                            @{
+                                                var OC = ViewBag.Status;
+                                                if (OC == "Close")
+                                                {
+                                                    <input class="shadow form-check-input" type="checkbox" role="switch" style="float:right" id="Prostatus">
+                                                }
+                                                else
+                                                {
+                                                    <input class="shadow form-check-input" type="checkbox" role="switch" style="float:right" id="Prostatus" checked>
+                                                }
+                                            }
+                                            <label class="form-check-label" style="margin-right:40px;float:right" for="flexSwitchCheckChecked">حالة المشروع</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+                                        <div>
+                                            <label for="Profits" class="form-label" style="font-weight: bold">الارباح</label>
+                                    @{
+                                        if (ViewBag.Status == null || ViewBag.Status == "Open")
+                                        {
+                                            <div style="display: flex">
+                                                <input type="number" asp-for="Profits" class="shadow form-control" id="Profits" placeholder="الارباح" style="margin-left:5px" disabled>
+                                                        <button class="btn btn-outline-dark" id="BtnPS" disabled>
+                                                    <i class="fas fa-calculator"></i>
+                                                </button>
+                                            </div>
+                                        }
+                                        else{
+                                                <div style="display: flex">
+                                                    <input type="number" asp-for="Profits" class="shadow form-control" id="Profits" placeholder="الارباح" style="margin-left:5px">
+                                                        <button class="btn btn-outline-dark" id="BtnPS">
+                                                        <i class="fas fa-calculator"></i>
+                                                    </button>
+                                                </div>
+                                        }
+
+                                    }
+                                            <div id="errorcred" class="form-text" style="color: red; display:none;">* من فضلك ادخل الارباح</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-warning" style="margin: 15px 0 10px 0px;" id="Proedit">تعديل</button>
+                        <a asp-action="Index" asp-controller="Projects" class="btn btn-outline-primary">قائمة المشروعات</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
