@@ -96,28 +96,37 @@ namespace Webcontsractors.Controllers
         [HttpPost]
         public ActionResult Prosave(Projectmodel Pro, string STxt)
         {
-            Project NPro = new Project();
-            NPro.Projectname = Pro.Projectname;
-            NPro.Amount = Pro.Amount;
-            NPro.Amountvat = Pro.Amountvat;
-            NPro.Opningbalance = Pro.Opningbalance;
-            NPro.Prtid = Pro.Prtid;
-            NPro.Tdate = Pro.Tdate;
-            NPro.Note = Pro.Note;
-            NPro.Status = Pro.Status;
-            _IUW.Projects.Insert(NPro);
-            _IUW.Complete();
-            Oprationsviewmodel OC = new Oprationsviewmodel(_IUW);
-            var Uid = int.Parse(HttpContext.Request.Cookies["Id"]);
-            OC.AddProjects(Uid);
-            if (STxt == "Saveadd")
+            var FN = _IUW.Projects.GetAll().Where(x => x.Projectname == Pro.Projectname).ToList();
+            if (FN.Count == 0)
             {
-                return Json("Ok");
+                Project NPro = new Project();
+                NPro.Projectname = Pro.Projectname;
+                NPro.Amount = Pro.Amount;
+                NPro.Amountvat = Pro.Amountvat;
+                NPro.Opningbalance = Pro.Opningbalance;
+                NPro.Prtid = Pro.Prtid;
+                NPro.Tdate = Pro.Tdate;
+                NPro.Note = Pro.Note;
+                NPro.Status = Pro.Status;
+                _IUW.Projects.Insert(NPro);
+                _IUW.Complete();
+                Oprationsviewmodel OC = new Oprationsviewmodel(_IUW);
+                var Uid = int.Parse(HttpContext.Request.Cookies["Id"]);
+                OC.AddProjects(Uid);
+                if (STxt == "Saveadd")
+                {
+                    return Json("Ok");
+                }
+                else
+                {
+                    return Redirect("Index");
+                }
             }
             else
             {
                 return Redirect("Index");
             }
+            
         }
         [HttpGet]
         public ActionResult Proedit(int id)
@@ -236,7 +245,8 @@ namespace Webcontsractors.Controllers
                         Debitor = Trans.Debitor,
                         Tdate = Trans.Tdate,
                         Detailes = Trans.Detailes,
-                        Vatamount = Trans.Vatamount
+                        Vatamount = Trans.Vatamount,
+                        Note = Trans.Note
                     });
                 }
                 return View(NPro);

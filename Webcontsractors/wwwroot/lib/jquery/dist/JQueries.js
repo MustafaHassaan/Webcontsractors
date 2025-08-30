@@ -325,7 +325,20 @@
                 $("#errorcred").css("display", "");
             }
             return;
-        } else {
+        }
+        if (Creditor == "") {
+            Flag = false;
+            $("#errorcred").css("display", "");
+            e.preventDefault();
+            return;
+        }
+        if (Debitor == "") {
+            Flag = false;
+            e.preventDefault();
+            $("#errortrndipt").css("display", "");
+            return;
+        }
+        else {
             Flag = true;
             if (Debitor == "0.00") {
                 $("#errortrndipt").css("display", "none");
@@ -552,7 +565,20 @@
                 $("#errorcred").css("display", "");
             }
             return;
-        } else {
+        }
+        if (Creditor == "") {
+            Flag = false;
+            $("#errorcred").css("display", "");
+            e.preventDefault();
+            return;
+        }
+        if (Debitor == "") {
+            Flag = false;
+            e.preventDefault();
+            $("#errortrndipt").css("display", "");
+            return;
+        }
+        else {
             Flag = true;
             if (Debitor == "0.00") {
                 $("#errortrndipt").css("display", "none");
@@ -566,7 +592,8 @@
             e.preventDefault();
             $("#errortrnnote").css("display", "");
             return;
-        } else {
+        }
+        else {
             Flag = true;
             $("#errortrnnote").css("display", "none");
         }
@@ -575,7 +602,8 @@
             e.preventDefault();
             $("#errortrndate").css("display", "");
             return;
-        } else {
+        }
+        else {
             Flag = true;
             $("#errortrndate").css("display", "none");
         }
@@ -584,7 +612,8 @@
             e.preventDefault();
             $("#errortrnpro").css("display", "");
             return;
-        } else {
+        }
+        else {
             Flag = true;
             $("#errortrnpro").css("display", "none");
         }
@@ -644,7 +673,20 @@
                 $("#errorcred").css("display", "");
             }
             return;
-        } else {
+        }
+        if (Creditor == "") {
+            Flag = false;
+            $("#errorcred").css("display", "");
+            e.preventDefault();
+            return;
+        }
+        if (Debitor == "") {
+            Flag = false;
+            e.preventDefault();
+            $("#errortrndipt").css("display", "");
+            return;
+        }
+        else {
             Flag = true;
             if (Debitor == "0.00") {
                 $("#errortrndipt").css("display", "none");

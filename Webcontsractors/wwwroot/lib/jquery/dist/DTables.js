@@ -308,15 +308,59 @@
                 return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
             };
 
-            // حساب الإجمالي لكل عمود
-            var totalAmount = api.column(2).data().reduce((a, b) => intVal(a) + intVal(b), 0);
-            var totalTax = api.column(3).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+            let totalCredit = 0;
+            let totalDebit = 0;
+            let totalTax = 0;
+            let creditTax = 0;
+            let debitTax = 0;
 
-            // تحديث الفوتر بالقيم المحسوبة
+            api.rows().every(function () {
+                var rowData = this.data();
+                var credit = intVal(rowData[1]); // الدائن
+                var debit = intVal(rowData[2]);  // المدين
+                var tax = intVal(rowData[3]);    // الضريبة
+
+                totalCredit += credit;
+                totalDebit += debit;
+                totalTax += tax;
+
+                if (credit > 0) {
+                    creditTax += tax;
+                } else if (debit > 0) {
+                    debitTax += tax;
+                }
+            });
+
+            var netTax = creditTax - debitTax;
+
+            // عرض "الاجمالي" في العمود الأول
             $(api.column(0).footer()).html('الاجمالي');
-            $(api.column(2).footer()).html(totalAmount);
-            $(api.column(3).footer()).html(totalTax);
+
+            // عرض إجمالي الدائن والمدين
+            $(api.column(1).footer()).html(totalCredit.toFixed(2));
+            $(api.column(2).footer()).html(totalDebit.toFixed(2));
+
+            // عرض الفرق في الضريبة بدلاً من الإجمالي
+            $(api.column(3).footer()).html(netTax.toFixed(2));
         }
+        //"footerCallback": function (row, data, start, end, display) {
+        //    var api = this.api();
+
+        //    var intVal = function (i) {
+        //        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+        //    };
+
+        //    // حساب الإجمالي لكل عمود
+        //    var totaldipt = api.column(1).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+        //    var totalAmount = api.column(2).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+        //    var totalTax = api.column(3).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+
+        //    // تحديث الفوتر بالقيم المحسوبة
+        //    $(api.column(0).footer()).html('الاجمالي');
+        //    $(api.column(1).footer()).html(totaldipt);
+        //    $(api.column(2).footer()).html(totalAmount);
+        //    $(api.column(3).footer()).html(totalTax);
+        //}
     });
     $("#Trntbl_wrapper .row").eq(0).append("<div id='AddOn' class='d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto text-center'>" +
                                  "<div class='btn-toolbar' role='toolbar' aria-label='Toolbar with button groups'>" +

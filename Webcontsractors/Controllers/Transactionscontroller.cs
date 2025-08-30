@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -193,6 +194,7 @@ namespace Webcontsractors.Controllers
                     Tdate = Date,
                     Proid = Trn.Proid,
                     Prtname = Prtname,
+                    Note = Trn.Note,
                 });
             }
             ViewBag.DTF = DTF ?? null;
@@ -434,45 +436,63 @@ namespace Webcontsractors.Controllers
                 SLI.Add(item);
             }
             ViewBag.Pro = SLI;
-            var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
-            {
-                x.Id,
-                x.Creditor,
-                x.Debitor,
-                x.Tdate,
-                x.Detailes,
-                x.Vatamount,
-                x.Note,
-                x.Pro?.Projectname,
-                x.Pro,
-                x.Prtid,
-            }).OrderByDescending(x => x.Tdate);
-            List<Transactionmodel> LTM = new List<Transactionmodel>();
-            foreach (var Trn in Trnlist)
-            {
-                var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
-                var Prtname = "";
-                if (Trn.Prtid != null)
-                {
-                    var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
-                    Prtname = GP?.Partnername;
-                }
-                LTM.Add(new Transactionmodel
-                {
-                    Id = Trn.Id,
-                    Projectname = Trn.Projectname,
-                    Creditor = Trn.Creditor,
-                    Debitor = Trn.Debitor,
-                    Balance = Trn.Creditor - Trn.Debitor,
-                    Detailes = Trn.Detailes,
-                    Vatamount = Trn.Vatamount ?? 0,
-                    Note = Trn.Note,
-                    Tdate = Date,
-                    Proid = Trn.Pro?.Id,
-                    Prtname = Prtname,
-                });
-            }
-            return View("Index", LTM);
+            //var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
+            //{
+            //    x.Id,
+            //    x.Creditor,
+            //    x.Debitor,
+            //    x.Tdate,
+            //    x.Detailes,
+            //    x.Vatamount,
+            //    x.Note,
+            //    x.Pro?.Projectname,
+            //    x.Pro,
+            //    x.Prtid,
+            //}).OrderByDescending(x => x.Id);
+            //List<Transactionmodel> LTM = new List<Transactionmodel>();
+            //foreach (var Trn in Trnlist)
+            //{
+            //    var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
+            //    var Prtname = "";
+            //    if (Trn.Prtid != null)
+            //    {
+            //        var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
+            //        Prtname = GP?.Partnername;
+            //    }
+            //    LTM.Add(new Transactionmodel
+            //    {
+            //        Id = Trn.Id,
+            //        Projectname = Trn.Projectname,
+            //        Creditor = Trn.Creditor,
+            //        Debitor = Trn.Debitor,
+            //        Balance = Trn.Creditor - Trn.Debitor,
+            //        Detailes = Trn.Detailes,
+            //        Vatamount = Trn.Vatamount ?? 0,
+            //        Note = Trn.Note,
+            //        Tdate = Date,
+            //        Proid = Trn.Pro?.Id,
+            //        Prtname = Prtname,
+            //    });
+            //}
+            var result = _IUW.TblTransactions.GetQueryable()
+.Include(t => t.Pro)
+.Include(t => t.Prt)
+.OrderByDescending(t => t.Tdate)
+.Select(t => new Transactionmodel
+{
+Id = t.Id,
+Creditor = t.Creditor,
+Debitor = t.Debitor,
+Vatamount = t.Vatamount ?? 0,
+Projectname = t.Pro != null ? t.Pro.Projectname : null,
+    Detailes = t.Detailes,
+    Tdate = t.Tdate.ToString(),
+Prtname = t.Prt != null ? t.Prt.Partnername : null,
+    Proid = t.Proid,
+    Note = t.Note
+})
+.ToList();
+            return View("Index", result);
         }
         public IActionResult last100()
         {
@@ -487,46 +507,66 @@ namespace Webcontsractors.Controllers
                 SLI.Add(item);
             }
             ViewBag.Pro = SLI;
-            var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
-            {
-                x.Id,
-                x.Creditor,
-                x.Debitor,
-                x.Tdate,
-                x.Detailes,
-                x.Vatamount,
-                x.Note,
-                x.Pro?.Projectname,
-                x.Pro,
-                x.Prtid,
-            }).OrderByDescending(x => x.Tdate);
-            List<Transactionmodel> LTM = new List<Transactionmodel>();
-            foreach (var Trn in Trnlist)
-            {
-                var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
-                var Prtname = "";
-                if (Trn.Prtid != null)
-                {
-                    var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
-                    Prtname = GP?.Partnername;
-                }
-                LTM.Add(new Transactionmodel
-                {
-                    Id = Trn.Id,
-                    Projectname = Trn.Projectname,
-                    Creditor = Trn.Creditor,
-                    Debitor = Trn.Debitor,
-                    Balance = Trn.Creditor - Trn.Debitor,
-                    Detailes = Trn.Detailes,
-                    Vatamount = Trn.Vatamount ?? 0,
-                    Note = Trn.Note,
-                    Tdate = Date,
-                    Proid = Trn.Pro?.Id,
-                    Prtname = Prtname,
-                });
-            }
-            var Data = LTM.TakeLast(100);
-            return View("Index", Data);
+
+            //var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
+            //{
+            //    x.Id,
+            //    x.Creditor,
+            //    x.Debitor,
+            //    x.Tdate,
+            //    x.Detailes,
+            //    x.Vatamount,
+            //    x.Note,
+            //    x.Pro?.Projectname,
+            //    x.Pro,
+            //    x.Prtid,
+            //}).OrderByDescending(x => x.Id);
+            //List<Transactionmodel> LTM = new List<Transactionmodel>();
+            //foreach (var Trn in Trnlist)
+            //{
+            //    var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
+            //    var Prtname = "";
+            //    if (Trn.Prtid != null)
+            //    {
+            //        var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
+            //        Prtname = GP?.Partnername;
+            //    }
+            //    LTM.Add(new Transactionmodel
+            //    {
+            //        Id = Trn.Id,
+            //        Projectname = Trn.Projectname,
+            //        Creditor = Trn.Creditor,
+            //        Debitor = Trn.Debitor,
+            //        Balance = Trn.Creditor - Trn.Debitor,
+            //        Detailes = Trn.Detailes,
+            //        Vatamount = Trn.Vatamount ?? 0,
+            //        Note = Trn.Note,
+            //        Tdate = Date,
+            //        Proid = Trn.Pro?.Id,
+            //        Prtname = Prtname,
+            //    });
+            //}
+            //var Data = LTM.Take(100);
+            var result = _IUW.TblTransactions.GetQueryable()
+.Include(t => t.Pro)
+.Include(t => t.Prt)
+.OrderByDescending(t => t.Tdate)
+.Take(100)
+.Select(t => new Transactionmodel
+{
+Id = t.Id,
+Creditor = t.Creditor,
+Debitor = t.Debitor,
+Vatamount = t.Vatamount ?? 0,
+Projectname = t.Pro != null ? t.Pro.Projectname : null,
+    Detailes = t.Detailes,
+    Tdate = t.Tdate.ToString(),
+Prtname = t.Prt != null ? t.Prt.Partnername : null,
+    Proid = t.Proid,
+    Note = t.Note
+})
+.ToList();
+            return View("Index", result);
         }
         public IActionResult last50()
         {
@@ -541,46 +581,67 @@ namespace Webcontsractors.Controllers
                 SLI.Add(item);
             }
             ViewBag.Pro = SLI;
-            var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
-            {
-                x.Id,
-                x.Creditor,
-                x.Debitor,
-                x.Tdate,
-                x.Detailes,
-                x.Vatamount,
-                x.Note,
-                x.Pro?.Projectname,
-                x.Pro,
-                x.Prtid,
-            }).OrderByDescending(x => x.Tdate);
-            List<Transactionmodel> LTM = new List<Transactionmodel>();
-            foreach (var Trn in Trnlist)
-            {
-                var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
-                var Prtname = "";
-                if (Trn.Prtid != null)
-                {
-                    var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
-                    Prtname = GP?.Partnername;
-                }
-                LTM.Add(new Transactionmodel
-                {
-                    Id = Trn.Id,
-                    Projectname = Trn.Projectname,
-                    Creditor = Trn.Creditor,
-                    Debitor = Trn.Debitor,
-                    Balance = Trn.Creditor - Trn.Debitor,
-                    Detailes = Trn.Detailes,
-                    Vatamount = Trn.Vatamount ?? 0,
-                    Note = Trn.Note,
-                    Tdate = Date,
-                    Proid = Trn.Pro?.Id,
-                    Prtname = Prtname,
-                });
-            }
-            var Data = LTM.TakeLast(50);
-            return View("Index",Data);
+
+
+            //var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
+            //{
+            //    x.Id,
+            //    x.Creditor,
+            //    x.Debitor,
+            //    x.Tdate,
+            //    x.Detailes,
+            //    x.Vatamount,
+            //    x.Note,
+            //    x.Pro?.Projectname,
+            //    x.Pro,
+            //    x.Prtid,
+            //}).OrderByDescending(x => x.Id);
+            //List<Transactionmodel> LTM = new List<Transactionmodel>();
+            //foreach (var Trn in Trnlist)
+            //{
+            //    var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
+            //    var Prtname = "";
+            //    if (Trn.Prtid != null)
+            //    {
+            //        var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
+            //        Prtname = GP?.Partnername;
+            //    }
+            //    LTM.Add(new Transactionmodel
+            //    {
+            //        Id = Trn.Id,
+            //        Projectname = Trn.Projectname,
+            //        Creditor = Trn.Creditor,
+            //        Debitor = Trn.Debitor,
+            //        Balance = Trn.Creditor - Trn.Debitor,
+            //        Detailes = Trn.Detailes,
+            //        Vatamount = Trn.Vatamount ?? 0,
+            //        Note = Trn.Note,
+            //        Tdate = Date,
+            //        Proid = Trn.Pro?.Id,
+            //        Prtname = Prtname,
+            //    });
+            //}
+            //var Data = LTM.Take(50);
+            var result = _IUW.TblTransactions.GetQueryable()
+    .Include(t => t.Pro)
+    .Include(t => t.Prt)
+    .OrderByDescending(t => t.Tdate)
+    .Take(50)
+    .Select(t => new Transactionmodel
+    {
+        Id = t.Id,
+        Creditor = t.Creditor,
+        Debitor = t.Debitor,
+        Vatamount = t.Vatamount ?? 0,
+        Projectname = t.Pro != null ? t.Pro.Projectname : null,
+        Detailes = t.Detailes,
+        Tdate = t.Tdate.ToString(),
+        Prtname = t.Prt != null ? t.Prt.Partnername : null,
+        Proid = t.Proid,
+        Note = t.Note
+    })
+    .ToList();
+            return View("Index",result);
         }
         public IActionResult last10()
         {
@@ -595,46 +656,66 @@ namespace Webcontsractors.Controllers
                 SLI.Add(item);
             }
             ViewBag.Pro = SLI;
-            var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
-            {
-                x.Id,
-                x.Creditor,
-                x.Debitor,
-                x.Tdate,
-                x.Detailes,
-                x.Vatamount,
-                x.Note,
-                x.Pro?.Projectname,
-                x.Pro,
-                x.Prtid,
-            }).OrderByDescending(x => x.Id);
-            List<Transactionmodel> LTM = new List<Transactionmodel>();
-            foreach (var Trn in Trnlist)
-            {
-                var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
-                var Prtname = "";
-                if (Trn.Prtid != null)
+
+            var result = _IUW.TblTransactions.GetQueryable()
+                .Include(t => t.Pro)
+                .Include(t => t.Prt)
+                .OrderByDescending(t => t.Tdate)
+                .Take(10)
+                .Select(t => new Transactionmodel
                 {
-                    var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
-                    Prtname = GP?.Partnername;
-                }
-                LTM.Add(new Transactionmodel
-                {
-                    Id = Trn.Id,
-                    Projectname = Trn.Projectname,
-                    Creditor = Trn.Creditor,
-                    Debitor = Trn.Debitor,
-                    Balance = Trn.Creditor - Trn.Debitor,
-                    Detailes = Trn.Detailes,
-                    Vatamount = Trn.Vatamount ?? 0,
-                    Note = Trn.Note,
-                    Tdate = Date,
-                    Proid = Trn.Pro?.Id,
-                    Prtname = Prtname,
-                });
-            }
-            var Data = LTM.Take(10);
-            return View("Index", Data);
+                    Id = t.Id,
+                    Creditor = t.Creditor,
+                    Debitor = t.Debitor,
+                    Vatamount = t.Vatamount ?? 0,
+                    Projectname = t.Pro != null ? t.Pro.Projectname : null,
+                    Detailes = t.Detailes,
+                    Tdate = t.Tdate.ToString(),
+                    Prtname = t.Prt != null ? t.Prt.Partnername : null,
+                    Proid = t.Proid,
+                    Note = t.Note
+                })
+                .ToList();
+            //var Trnlist = _IUW.TblTransactions.GetAllwithmaster("Pro").Select(x => new
+            //{
+            //    x.Id,
+            //    x.Creditor,
+            //    x.Debitor,
+            //    x.Tdate,
+            //    x.Detailes,
+            //    x.Vatamount,
+            //    x.Note,
+            //    x.Pro?.Projectname,
+            //    x.Pro,
+            //    x.Prtid,
+            //}).OrderByDescending(x => x.Id);
+            //List<Transactionmodel> LTM = new List<Transactionmodel>();
+            //foreach (var Trn in Trnlist)
+            //{
+            //    var Date = Convert.ToDateTime(Trn.Tdate?.ToString()).ToString("yyyy-MM-dd");
+            //    var Prtname = "";
+            //    if (Trn.Prtid != null)
+            //    {
+            //        var GP = Prt.Where(x => Trn.Prtid == x.Id).FirstOrDefault();
+            //        Prtname = GP?.Partnername;
+            //    }
+            //    LTM.Add(new Transactionmodel
+            //    {
+            //        Id = Trn.Id,
+            //        Projectname = Trn.Projectname,
+            //        Creditor = Trn.Creditor,
+            //        Debitor = Trn.Debitor,
+            //        Balance = Trn.Creditor - Trn.Debitor,
+            //        Detailes = Trn.Detailes,
+            //        Vatamount = Trn.Vatamount ?? 0,
+            //        Note = Trn.Note,
+            //        Tdate = Date,
+            //        Proid = Trn.Pro?.Id,
+            //        Prtname = Prtname,
+            //    });
+            //}
+            //var Data = LTM.Take(10);
+            return View("Index", result);
         }
     }
 }
