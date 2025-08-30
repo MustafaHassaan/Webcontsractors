@@ -198,47 +198,71 @@
     }
     //
     $("#Prosave").on("click", function (e) {
+        e.preventDefault();
+
         $("#STxt").val("Save");
-        var Statuschaecked = $('#Prostatus').is(':checked');
-        if (Statuschaecked) {
-            Status = "Open";
-        } else {
-            Status = "Close";
-        }
-        Projectname = $("#proname").val();
-        Amount = $("#amount").val();
-        Amountvat = $("#amountvat").val();
-        Opningbalance = $("#Opningbalance").val();
-        Note = $("#Pronote").val();
-        Prtid = $("#Prtpro").find("option:selected").val();
+
+        var Status = $('#Prostatus').is(':checked') ? "Open" : "Close";
+
+        var Projectname = $("#proname").val();
+        var Amount = $("#amount").val();
+        var Amountvat = $("#amountvat").val();
+        var Opningbalance = $("#Opningbalance").val();
+        var Note = $("#Pronote").val();
+        var Prtid = $("#Prtpro").find("option:selected").val();
+
+        // ✅ Validation
         if (Projectname == "") {
-            Flag = false;
-            $("#errorproname").css("display", "");
-            e.preventDefault();
+            $("#errorproname").show();
             return;
         } else {
-            Flag = true;
-            $("#errorproname").css("display", "none");
+            $("#errorproname").hide();
         }
+
         if (Amount == "") {
-            Flag = false;
-            $("#erroramount").css("display", "");
-            e.preventDefault();
+            $("#erroramount").show();
             return;
         } else {
-            Flag = true;
-            $("#erroramount").css("display", "none");
+            $("#erroramount").hide();
         }
+
         if (Prtid == "0") {
-            Flag = false;
-            $("#errorPrtpro").css("display", "");
-            e.preventDefault();
+            $("#errorPrtpro").show();
             return;
         } else {
-            Flag = true;
-            $("#errorPrtpro").css("display", "none");
+            $("#errorPrtpro").hide();
         }
+
+        // ✅ بعت البيانات يدويًا
+        $.ajax({
+            url: '/Projects/Prosave',   // <-- غيرها لاسم الكنترولر الصح
+            type: 'POST',
+            data: {
+                Projectname: Projectname,
+                Amount: Amount,
+                Amountvat: Amountvat,
+                Opningbalance: Opningbalance,
+                Note: Note,
+                Prtid: Prtid,
+                Status: Status,
+                STxt: $("#STxt").val()
+            },
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    if (res.redirectUrl) {
+                        window.location.href = res.redirectUrl;
+                    }
+                } else {
+                    alert("خطأ: " + res.message);
+                }
+            },
+            error: function () {
+                alert("حصل خطأ في السيرفر");
+            }
+        });
     });
+
     $("#ProsaveAdd").on("click", function (e) {
         e.preventDefault(); // نمنع الإرسال العادي
 
@@ -288,6 +312,9 @@
                     // إعادة تعيين النموذج أو أي إجراء حسب المطلوب
                     alert("تم الحفظ والإضافة بنجاح!");
                     location.reload(); // أو افتح مودال جديد أو صفحة جديدة
+                }
+                else {
+                    alert("خطأ: " + response.message);
                 }
             },
             error: function (xhr) {
@@ -1083,6 +1110,7 @@
 
     //Transaction Excel 
     $("#EXC").on('click', function () {
+        var DT = $('#Trntbl').DataTable();
         var transactionmodel = [];
         DT.rows().every(function () {
             var row = this.node(); // Get the DOM element for the row

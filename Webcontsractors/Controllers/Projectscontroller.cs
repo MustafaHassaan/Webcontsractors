@@ -115,18 +115,18 @@ namespace Webcontsractors.Controllers
                 OC.AddProjects(Uid);
                 if (STxt == "Saveadd")
                 {
-                    return Json("Ok");
+                    return Json(new { success = true, message = "تم الحفظ بنجاح" });
                 }
                 else
                 {
-                    return Redirect("Index");
+                    return Json(new { success = true, redirectUrl = Url.Action("Index") });
                 }
             }
             else
             {
-                return Redirect("Index");
+                return Json(new { success = false, message = "المشروع موجود بالفعل" });
             }
-            
+
         }
         [HttpGet]
         public ActionResult Proedit(int id)
